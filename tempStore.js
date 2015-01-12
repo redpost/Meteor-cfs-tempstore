@@ -71,7 +71,16 @@ function mountStorage() {
   } else if (Package["cfs:filesystem"]) {
 
     // use the Filesystem
-    FS.TempStore.Storage = new FS.Store.FileSystem('_tempstore', { internal: true });
+    // FS.TempStore.Storage = new FS.Store.FileSystem('_tempstore', { internal: true });
+    var storeArgs = {internal: true};
+    var TMPDIR = process.env.TMPDIR;
+    if (TMPDIR) {
+      FS.debug && console.log('TMPDIR: ' + TMPDIR);
+      storeArgs.path = TMPDIR;
+    } else {
+      FS.debug && console.log('No TMPDIR found');
+    }
+    FS.TempStore.Storage = new FS.Store.FileSystem('_tempstore', storeArgs);
   } else {
     throw new Error('FS.TempStore.Storage is not set: Install cfs:filesystem or cfs:gridfs or set it manually');
   }
